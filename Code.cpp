@@ -15,7 +15,7 @@ int main (){
     bool exitprogram = false;
     while(!exitprogram){
     displayMenu();
-    cout << "Enter your choice: ";
+    cout << "  Please enter your selection (1-6): ";
     cin>>choice;
     while (choice<1||choice>6){
         cout<<"Invalid choice! Please enter a valid option(1-6): ";
@@ -44,12 +44,45 @@ int main (){
 }
 }
 void displayMenu(){
-    cout << "=========="<<endl;
-    cout<< "TYPEMASTER"<<endl;
-    cout<<"============"<<endl;
-    cout<<"Welcome! You are at the right platform to test how fast you type\nPlease choose your difficulty level:"<<endl;
-    cout<<"1- Easy (includes basic english words)\n2-Medium (includes tricky words with capitals)\n3-Difficult (includes numbers and punctutaion marks)\n4-Veteran (includes brackets and difficult combination of characters)\n5- See your record\n6-Exit"<<endl;
+    cout << "\n\n";
+    cout << "  ============================================================================" << endl;
+    cout << "                                                                              " << endl;
+    cout << "                              T Y P E M A S T E R                             " << endl;
+    cout << "                           ________________________                           " << endl;
+    cout << "                                                                              " << endl;
+    cout << "                      Professional Typing Assessment Tool                     " << endl;
+    cout << "                                  v1.0.0                                      " << endl;
+    cout << "                                                                              " << endl;
+    cout << "  ============================================================================" << endl;
+    cout << endl;
+    cout << "  Welcome! This application will measure your typing speed and accuracy." << endl;
+    cout << endl;
+    cout << "  +---------------------------------------------------------------------------+" << endl;
+    cout << "  |                                                                           |" << endl;
+    cout << "  |   DIFFICULTY LEVELS:                                                      |" << endl;
+    cout << "  |   ~~~~~~~~~~~~~~~~~~                                                      |" << endl;
+    cout << "  |                                                                           |" << endl;
+    cout << "  |      Option 1:  EASY                                                      |" << endl;
+    cout << "  |                 Simple lowercase words and short sentences                |" << endl;
+    cout << "  |                                                                           |" << endl;
+    cout << "  |      Option 2:  MEDIUM                                                    |" << endl;
+    cout << "  |                 Mixed case words with moderate complexity                 |" << endl;
+    cout << "  |                                                                           |" << endl;
+    cout << "  |      Option 3:  DIFFICULT                                                 |" << endl;
+    cout << "  |                 Includes numbers, punctuation, and special chars          |" << endl;
+    cout << "  |                                                                           |" << endl;
+    cout << "  |      Option 4:  VETERAN                                                   |" << endl;
+    cout << "  |                 Programming syntax, brackets, and complex patterns        |" << endl;
+    cout << "  |                                                                           |" << endl;
+    cout << "  +---------------------------------------------------------------------------+" << endl;
+    cout << "  |      Option 5:  View Performance Records                                  |" << endl;
+    cout << "  |      Option 6:  Exit Application                                          |" << endl;
+    cout << "  +---------------------------------------------------------------------------+" << endl;
+    cout << endl;
+   
 }
+
+
 void easyText(){
     cout << "[EASY MODE SELECTED]"<<endl;
 }
