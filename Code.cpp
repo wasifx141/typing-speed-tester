@@ -2,8 +2,9 @@
 using namespace std;
   
 
-int main {}{
-    cout << "==================="<<endl;
+int main (){
+    cout << "======================="<<endl;
     cout<< "TYPING SPEED CALCULATOR"<<endl;
-    cout<<"======================"
+    cout<<"======================="<<endl;
+    cout<<"Welcome! You are at";
 }
