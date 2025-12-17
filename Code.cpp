@@ -2,6 +2,9 @@
 #include <fstream>//for handling files
 #include<chrono>//for time management
 #include <string>//for managing with strings
+#include <cstdlib>//for the random function to get random paragraphs
+#include <ctime>//for time() function due to involvement of  time control
+#include <iomanip>//for formatting the output
 using namespace std;
 
 void easyText();
@@ -291,7 +294,7 @@ const int DIFFICULT_COUNT = 20;
     "Photosynthesis: 6CO2 + 6H2O + light energy --> C6H12O6 + 6O2 | Glucose (C6H12O6) = sugar produced by plants",
     
     
-    "Secure Passwords: Tr0ub4dor&3 | correct#horse$battery%staple | P@$$w0rd!2024 | xK#9$mP@2&vL!",
+    "Secure Passwords: Tr0ub4dor&3 | correct#horse$batterystaple | P@$$w0rd!2024 | xK#9$mP@2&vL!",
     
     
     "Location: 40.7128N, 74.0060W (New York) | Distance: 5,847.23 km | ETA @ 65 mph = ~56 hrs | Route: I-95 -> I-80",
@@ -331,6 +334,7 @@ const int DIFFICULT_COUNT = 20;
 
 const int VETERAN_COUNT = 20;
 int main (){
+    srand(time(0));//so that a different paragraph is  displayeed everytime as the time seed always changes
     int choice;
     bool exitprogram = false;
     while(!exitprogram){
@@ -436,4 +440,38 @@ void veteranText(){
 void showData(){
     cout << "\n[VIEWING RECORDS]"<<endl;
 
+}
+int countWords(const string& text) {//This function calculates the number of words in the paragraphs so that  we can calculate WPM accordingly
+    if (text.empty()) return 0;//for empy text
+    
+    int count = 0;//calculates the  word count
+    bool inWord = false;
+    
+    for (int i = 0; i < text.length(); i++) {
+        if (text[i] != ' ') {//Checks for the words other than spaces
+            if (!inWord) {//if we are in the word then it keeps inword=true and our word count increases by one
+                count++;
+                inWord = true;
+            }
+        } else {
+            inWord = false;
+        }
+    }
+    return count;
+}
+//Function to calculate the accuracy so that we can fix the wpm according to the fact that if user has typed the text xorrectly or not
+double calculateAccuracy(const string& original, const string& typed, int& errorCount) {
+    errorCount = 0;
+    int correctCount = 0;
+    
+    int minLength = min(original.length(), typed.length());
+    
+    // Compare character by character
+    for (int i = 0; i < minLength; i++) {
+        if (original[i] == typed[i]) {
+            correctCount++;
+        } else {
+            errorCount++;
+        }
+    }
 }
