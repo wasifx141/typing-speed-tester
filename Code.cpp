@@ -467,32 +467,134 @@ void easyText(const string EASY_PARAGRAPHS[], int size, string username){
     }
 }
 
-void mediumText(const string MEDIUM_PARAGRAPHS[] , int size){
-      cout << "\n";
-    cout << "    +----------------------------------------------------------+" << endl;
-    cout << "    |                      MEDIUM MODE                          |" << endl;
-    cout << "    +----------------------------------------------------------+" << endl;
+void mediumText(const string MEDIUM_PARAGRAPHS[], int size, string username) {
+    string choice, displayedString, typedString;
+    double minutes, wpm, accuracy;
+    int randomIndex;
     
-
-}
-void difficultText(const string DIFFICULT_PARAGRAPHS[] , int size){
-      cout << "\n";
-    cout << "    +----------------------------------------------------------+" << endl;
-    cout << "    |                      DIFFICULT MODE                           |" << endl;
-    cout << "    +----------------------------------------------------------+" << endl;
-  
-}
-void veteranText(const string VETERAN_PARAGRAPHS[] , int size){
-      cout << "\n";
-    cout << "    +----------------------------------------------------------+" << endl;
-    cout << "    |                      VETERAN MODE                           |" << endl;
-    cout << "    +----------------------------------------------------------+" << endl;
+    cout << "\n";
+    cout << "  +------------------------------------------+" << endl;
+    cout << "  |             MEDIUM MODE                  |" << endl;
+    cout << "  +------------------------------------------+" << endl;
+    cout << "  When you are ready, type 'start': ";
+    cin >> choice;
     
+    transform(choice.begin(), choice.end(), choice.begin(), ::tolower);
+    
+    if (choice == "start") {
+        randomIndex = rand() % size;
+        displayedString = MEDIUM_PARAGRAPHS[randomIndex];
+        
+        cout << "\n  -------- TYPE THE FOLLOWING TEXT --------\n" << endl;
+        cout << "  " << displayedString << endl;
+        cout << "\n  ------------------------------------------" << endl;
+        cout << "  Start typing: ";
+        
+        cin.ignore();
+        
+        auto start = chrono::steady_clock::now();
+        getline(cin, typedString);
+        auto end = chrono::steady_clock::now();
+        
+        chrono::duration<double> totalTime = end - start;
+        minutes = totalTime.count() / 60.0;
+        
+        accuracy = calculateAccuracy(displayedString, typedString);
+        wpm = (typedString.length() / 5.0) / minutes;
+        
+        DisplayResult(accuracy, wpm);
+        saveScore(username, wpm);
+    } else {
+        cout << "  Invalid choice! Returning to menu." << endl;
+    }
 }
-void showData(){
-    cout << "\n[VIEWING RECORDS]"<<endl;
 
+
+// ==================== DIFFICULT MODE ====================
+void difficultText(const string DIFFICULT_PARAGRAPHS[], int size, string username) {
+    string choice, displayedString, typedString;
+    double minutes, wpm, accuracy;
+    int randomIndex;
+    
+    cout << "\n";
+    cout << "  +------------------------------------------+" << endl;
+    cout << "  |           DIFFICULT MODE                 |" << endl;
+    cout << "  +------------------------------------------+" << endl;
+    cout << "  When you are ready, type 'start': ";
+    cin >> choice;
+    
+    transform(choice.begin(), choice.end(), choice.begin(), ::tolower);
+    
+    if (choice == "start") {
+        randomIndex = rand() % size;
+        displayedString = DIFFICULT_PARAGRAPHS[randomIndex];
+        
+        cout << "\n  -------- TYPE THE FOLLOWING TEXT --------\n" << endl;
+        cout << "  " << displayedString << endl;
+        cout << "\n  ------------------------------------------" << endl;
+        cout << "  Start typing: ";
+        
+        cin.ignore();
+        
+        auto start = chrono::steady_clock::now();
+        getline(cin, typedString);
+        auto end = chrono::steady_clock::now();
+        
+        chrono::duration<double> totalTime = end - start;
+        minutes = totalTime.count() / 60.0;
+        
+        accuracy = calculateAccuracy(displayedString, typedString);
+        wpm = (typedString.length() / 5.0) / minutes;
+        
+        DisplayResult(accuracy, wpm);
+        saveScore(username, wpm);
+    } else {
+        cout << "  Invalid choice! Returning to menu." << endl;
+    }
 }
+
+void veteranText(const string VETERAN_PARAGRAPHS[], int size, string username) {
+    string choice, displayedString, typedString;
+    double minutes, wpm, accuracy;
+    int randomIndex;
+    
+    cout << "\n";
+    cout << "  +------------------------------------------+" << endl;
+    cout << "  |            VETERAN MODE                  |" << endl;
+    cout << "  +------------------------------------------+" << endl;
+    cout << "  When you are ready, type 'start': ";
+    cin >> choice;
+    
+    transform(choice.begin(), choice.end(), choice.begin(), ::tolower);
+    
+    if (choice == "start") {
+        randomIndex = rand() % size;
+        displayedString = VETERAN_PARAGRAPHS[randomIndex];
+        
+        cout << "\n  -------- TYPE THE FOLLOWING TEXT --------\n" << endl;
+        cout << "  " << displayedString << endl;
+        cout << "\n  ------------------------------------------" << endl;
+        cout << "  Start typing: ";
+        
+        cin.ignore();
+        
+        auto start = chrono::steady_clock::now();
+        getline(cin, typedString);
+        auto end = chrono::steady_clock::now();
+        
+        chrono::duration<double> totalTime = end - start;
+        minutes = totalTime.count() / 60.0;
+        
+        accuracy = calculateAccuracy(displayedString, typedString);
+        wpm = (typedString.length() / 5.0) / minutes;
+        
+        DisplayResult(accuracy, wpm);
+        saveScore(username, wpm);
+    } else {
+        cout << "  Invalid choice! Returning to menu." << endl;
+    }
+}
+
 int countWords(const string& text) {
     if (text.empty()) return 0;
     
