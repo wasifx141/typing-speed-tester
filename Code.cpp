@@ -10,12 +10,17 @@
 using namespace std;
 int array_size = 20;
 
-void easyText(const string EASY_PARAGRAPHS[] , int size);
-void mediumText(const string MEDIUM_PARAGRAPHS[] , int size);
-void difficultText(const string DIFFICULT_PARAGRAPHS[] , int size);
-void veteranText(const string VETERAN_PARAGRAPHS[] , int size);
+void easyText(const string EASY_PARAGRAPHS[], int size, string username);
+void mediumText(const string MEDIUM_PARAGRAPHS[], int size, string username);
+void difficultText(const string DIFFICULT_PARAGRAPHS[], int size, string username);
+void veteranText(const string VETERAN_PARAGRAPHS[], int size, string username);
+double calculateAccuracy(const string& original, const string& typed);
+void DisplayResult(double accuracy, double wpm);
 void showData();
 void displayMenu();
+int countWords(const string& text);
+void saveScore(string username, double wpm);
+string getUsername();
 
 
 const string EASY_PARAGRAPHS[] = {//Paragraphs for easy level difficulty
@@ -102,9 +107,6 @@ const string EASY_PARAGRAPHS[] = {//Paragraphs for easy level difficulty
 
 };
 
-
-
-
 const string MEDIUM_PARAGRAPHS[] = {//Paragraphs for medium difficulty level
     
     
@@ -188,7 +190,6 @@ const string MEDIUM_PARAGRAPHS[] = {//Paragraphs for medium difficulty level
     "Scientists and Activists work together to preserve Forests Oceans and endangered Wildlife species."
 
 };
-
 
 const string DIFFICULT_PARAGRAPHS[] = {
     
@@ -274,7 +275,7 @@ const string DIFFICULT_PARAGRAPHS[] = {
 
 };
 
-    const string VETERAN_PARAGRAPHS[] = {
+const string VETERAN_PARAGRAPHS[] = {
     "int main() { int x = 10; int y = 20; if (x < y) { cout << \"X is smaller!\"; } return 0; }",
     
     
@@ -334,40 +335,44 @@ const string DIFFICULT_PARAGRAPHS[] = {
 
 };
 
-
-int main (){
-    srand(time(0));//so that a different paragraph is  displayeed everytime as the time seed always changes
+int main(){
+    srand(time(0));
     int choice;
     bool exitprogram = false;
-    while(!exitprogram){
-    displayMenu();
-    cout << "  Please enter your selection (1-6): ";
-    cin>>choice;
-    while (choice<1||choice>6){
-        cout<<"Invalid choice! Please enter a valid option(1-6): ";
-        cin>> choice;
+    string username;
+    username = getUsername();
+    while (!exitprogram) {
+        displayMenu();
+        cout << "  Please enter your selection (1-6): ";
+        cin >> choice;
+        while (choice < 1 || choice > 6) {
+            cout << "Invalid choice! Please enter a valid option (1-6): ";
+            cin >> choice;
+        }
+        switch (choice) {
+            case 1:
+                easyText(EASY_PARAGRAPHS, array_size, username);
+                break;
+            case 2:
+                mediumText(MEDIUM_PARAGRAPHS, array_size, username);
+                break;
+            case 3:
+                difficultText(DIFFICULT_PARAGRAPHS, array_size, username);
+                break;
+            case 4:
+                veteranText(VETERAN_PARAGRAPHS, array_size, username);
+                break;
+            case 5:
+                showData();
+                break;
+            case 6:
+                exitprogram = true;
+                cout << "\nThank you for using Typemaster, " << username << "!" << endl;
+                cout << "Make sure to come back again. KEEP PRACTICING!" << endl;
+                break;
+        }
     }
-    switch(choice){
-        case 1:
-            easyText(EASY_PARAGRAPHS, array_size);
-            break;
-        case 2:
-            mediumText(MEDIUM_PARAGRAPHS, array_size);
-            break;
-        case 3:
-            difficultText(MEDIUM_PARAGRAPHS, array_size );
-            break;
-        case 4:
-            veteranText(VETERAN_PARAGRAPHS, array_size);
-            break;
-        case 5:
-            showData();
-            break;
-        case 6:
-            exitprogram = true;
-            cout<<"Thank you for using Typemaster! Make sure to come back again\nKEEP PRACTICING!"<<endl;
-    }
-}
+    return 0;
 }
 void displayMenu(){
     cout << "\n\n";
@@ -407,29 +412,62 @@ void displayMenu(){
     cout << endl;
    
 }
+string getUsername() {
+    string name;
+    cout << "\n  ============================================" << endl;
+    cout << "         Welcome to TYPEMASTER!" << endl;
+    cout << "  ============================================" << endl;
+    cout << "  Please enter your username: ";
+    cin >> name;
+    cout << "  Hello, " << name << "! Let's improve your typing!" << endl;
+    return name;
+}
 
-
-void easyText(string EASY_PARAGRAPHS[] , int size){
-    string choice;
-    int randomIndex;
-      cout << "\n";
+void easyText(const string EASY_PARAGRAPHS[], int size, string username){
+    int randomIndex, wordsType;
+    string choice, displayedString ,typedString;
+    double minutes , wpm, accuracy;
+    cout << "\n";
     cout << "    +----------------------------------------------------------+" << endl;
     cout << "    |                      EASY MODE                           |" << endl;
     cout << "    +----------------------------------------------------------+" << endl;
     cout<<"When you are ready type start: ";
     cin>>choice;
     transform(choice.begin(), choice.end(), choice.begin(), ::tolower);
+
     if(choice == "start"){
       srand(time(0));
       randomIndex = rand() % size;
-      cout<<EASY_PARAGRAPHS[randomIndex];
-    }
-    else{
-        cout<<"Invalid choice!";
+      displayedString = EASY_PARAGRAPHS[randomIndex];
+
+        cout << "\n  -------- TYPE THE FOLLOWING TEXT --------\n" << endl;
+        cout << "  " << displayedString << endl;
+        cout << "\n  ------------------------------------------" << endl;
+        cout << "  Start typing: ";
+
+      auto start = std::chrono::steady_clock::now();
+      
+      cin.ignore();
+      getline(cin,typedString);
+
+      auto end = std::chrono::steady_clock::now();
+
+      accuracy =  calculateAccuracy(displayedString,typedString);
+      wordsType = countWords(typedString);
+
+      std::chrono::duration<double> totalTime = end - start;
+      minutes = totalTime.count()/60;
+      wpm =  (typedString.length()/ 5)/minutes;
+
+      DisplayResult(accuracy,wpm);
+      saveScore(username, wpm);
+      
+    } else {
+        cout << "  Invalid choice! Returning to menu." << endl;
     }
 }
 
-void mediumText(string MEDIUM_PARAGRAPHS[] , int size){
+void mediumText(const string MEDIUM_PARAGRAPHS[] , int size){
       cout << "\n";
     cout << "    +----------------------------------------------------------+" << endl;
     cout << "    |                      MEDIUM MODE                          |" << endl;
@@ -437,14 +475,14 @@ void mediumText(string MEDIUM_PARAGRAPHS[] , int size){
     
 
 }
-void difficultText(string DIFFICULT_PARAGRAPHS[] , int size){
+void difficultText(const string DIFFICULT_PARAGRAPHS[] , int size){
       cout << "\n";
     cout << "    +----------------------------------------------------------+" << endl;
     cout << "    |                      DIFFICULT MODE                           |" << endl;
     cout << "    +----------------------------------------------------------+" << endl;
   
 }
-void veteranText(string VETERAN_PARAGRAPHS[] , int size){
+void veteranText(const string VETERAN_PARAGRAPHS[] , int size){
       cout << "\n";
     cout << "    +----------------------------------------------------------+" << endl;
     cout << "    |                      VETERAN MODE                           |" << endl;
@@ -455,15 +493,15 @@ void showData(){
     cout << "\n[VIEWING RECORDS]"<<endl;
 
 }
-int countWords(const string& text) {//This function calculates the number of words in the paragraphs so that  we can calculate WPM accordingly
-    if (text.empty()) return 0;//for empy text
+int countWords(const string& text) {
+    if (text.empty()) return 0;
     
-    int count = 0;//calculates the  word count
+    int count = 0;
     bool inWord = false;
     
-    for (int i = 0; i < text.length(); i++) {
-        if (text[i] != ' ') {//Checks for the words other than spaces
-            if (!inWord) {//if we are in the word then it keeps inword=true and our word count increases by one
+    for (size_t i = 0; i < text.length(); i++) {  // Fixed here
+        if (text[i] != ' ') {
+            if (!inWord) {
                 count++;
                 inWord = true;
             }
@@ -473,19 +511,111 @@ int countWords(const string& text) {//This function calculates the number of wor
     }
     return count;
 }
+
 //Function to calculate the accuracy so that we can fix the wpm according to the fact that if user has typed the text xorrectly or not
-double calculateAccuracy(const string& original, const string& typed, int& errorCount) {
-    errorCount = 0;
+double calculateAccuracy(const string& original, const string& typed) {
     int correctCount = 0;
-    
+    int totalTyped = typed.length();
+
     int minLength = min(original.length(), typed.length());
-    
+
     // Compare character by character
     for (int i = 0; i < minLength; i++) {
         if (original[i] == typed[i]) {
             correctCount++;
-        } else {
-            errorCount++;
         }
     }
+
+    // Avoid division by zero
+    if (totalTyped == 0){
+       return 0.0;
+    }
+
+    return (double)correctCount / totalTyped * 100.0;
 }
+void DisplayResult(double accuracy, double wpm) {
+    cout << "\n\n";
+    cout << "  +------------------------------------------+" << endl;
+    cout << "  |              RESULTS                     |" << endl;
+    cout << "  +------------------------------------------+" << endl;
+    cout << "  |  Accuracy: " << fixed << setprecision(2) << accuracy << " %" << endl;
+    cout << "  |  Speed:    " << fixed << setprecision(2) << wpm << " WPM" << endl;
+    cout << "  +------------------------------------------+" << endl;
+    cout << "  Your result has been saved!" << endl;
+}
+void saveScore(string username, double wpm) {
+    // First, read all existing records
+    ifstream inFile("scores.txt");
+    string names[100];
+    double scores[100];
+    int count = 0;
+    bool found = false;
+    int foundIndex = -1;
+    
+    // Read existing data
+    while (inFile >> names[count] >> scores[count]) {
+        if (names[count] == username) {
+            found = true;
+            foundIndex = count;
+        }
+        count++;
+    }
+    inFile.close();
+    
+    // Update or add new record
+    if (found) {
+        // Update only if new score is higher
+        if (wpm > scores[foundIndex]) {
+            scores[foundIndex] = wpm;
+            cout << "  New high score! Record updated!" << endl;
+        } else {
+            cout << "  Your high score is still: " << scores[foundIndex] << " WPM" << endl;
+        }
+    } else {
+        // Add new user
+        names[count] = username;
+        scores[count] = wpm;
+        count++;
+        cout << "  New record created for " << username << "!" << endl;
+    }
+    
+    // Write all data back to file
+    ofstream outFile("scores.txt");
+    for (int i = 0; i < count; i++) {
+        outFile << names[i] << " " << scores[i] << endl;
+    }
+    outFile.close();
+}
+
+// ==================== SHOW ALL RECORDS ====================
+void showData() {
+    cout << "\n";
+    cout << "  +------------------------------------------+" << endl;
+    cout << "  |          PERFORMANCE RECORDS             |" << endl;
+    cout << "  +------------------------------------------+" << endl;
+    
+    ifstream inFile("scores.txt");
+    
+    if (!inFile) {
+        cout << "  No records found yet!" << endl;
+        cout << "  +------------------------------------------+" << endl;
+        return;
+    }
+    
+    string name;
+    double score;
+    int rank = 1;
+    
+    cout << "  | Rank |   Username   |   High Score (WPM) |" << endl;
+    cout << "  +------------------------------------------+" << endl;
+    
+    while (inFile >> name >> score) {
+        cout << "  |  " << rank << "   |  " << setw(10) << left << name 
+             << "  |       " << fixed << setprecision(2) << score << "       |" << endl;
+        rank++;
+    }
+    
+    cout << "  +------------------------------------------+" << endl;
+    inFile.close();
+}
+
