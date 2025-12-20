@@ -5,12 +5,15 @@
 #include <cstdlib>//for the random function to get random paragraphs
 #include <ctime>//for time() function due to involvement of  time control
 #include <iomanip>//for formatting the output
-using namespace std;
+#include<algorithm>
 
-void easyText();
-void mediumText();
-void difficultText();
-void veteranText();
+using namespace std;
+int array_size = 20;
+
+void easyText(const string EASY_PARAGRAPHS[] , int size);
+void mediumText(const string MEDIUM_PARAGRAPHS[] , int size);
+void difficultText(const string DIFFICULT_PARAGRAPHS[] , int size);
+void veteranText(const string VETERAN_PARAGRAPHS[] , int size);
 void showData();
 void displayMenu();
 
@@ -99,7 +102,7 @@ const string EASY_PARAGRAPHS[] = {//Paragraphs for easy level difficulty
 
 };
 
-const int EASY_COUNT = 20;
+
 
 
 const string MEDIUM_PARAGRAPHS[] = {//Paragraphs for medium difficulty level
@@ -186,7 +189,7 @@ const string MEDIUM_PARAGRAPHS[] = {//Paragraphs for medium difficulty level
 
 };
 
-const int MEDIUM_COUNT = 20;
+
 const string DIFFICULT_PARAGRAPHS[] = {
     
     
@@ -271,7 +274,6 @@ const string DIFFICULT_PARAGRAPHS[] = {
 
 };
 
-const int DIFFICULT_COUNT = 20;
     const string VETERAN_PARAGRAPHS[] = {
     "int main() { int x = 10; int y = 20; if (x < y) { cout << \"X is smaller!\"; } return 0; }",
     
@@ -332,7 +334,7 @@ const int DIFFICULT_COUNT = 20;
 
 };
 
-const int VETERAN_COUNT = 20;
+
 int main (){
     srand(time(0));//so that a different paragraph is  displayeed everytime as the time seed always changes
     int choice;
@@ -347,16 +349,16 @@ int main (){
     }
     switch(choice){
         case 1:
-            easyText();
+            easyText(EASY_PARAGRAPHS, array_size);
             break;
         case 2:
-            mediumText();
+            mediumText(MEDIUM_PARAGRAPHS, array_size);
             break;
         case 3:
-            difficultText();
+            difficultText(MEDIUM_PARAGRAPHS, array_size );
             break;
         case 4:
-            veteranText();
+            veteranText(VETERAN_PARAGRAPHS, array_size);
             break;
         case 5:
             showData();
@@ -407,15 +409,27 @@ void displayMenu(){
 }
 
 
-void easyText(){
+void easyText(string EASY_PARAGRAPHS[] , int size){
+    string choice;
+    int randomIndex;
       cout << "\n";
     cout << "    +----------------------------------------------------------+" << endl;
     cout << "    |                      EASY MODE                           |" << endl;
     cout << "    +----------------------------------------------------------+" << endl;
-   
+    cout<<"When you are ready type start: ";
+    cin>>choice;
+    transform(choice.begin(), choice.end(), choice.begin(), ::tolower);
+    if(choice == "start"){
+      srand(time(0));
+      randomIndex = rand() % size;
+      cout<<EASY_PARAGRAPHS[randomIndex];
+    }
+    else{
+        cout<<"Invalid choice!";
+    }
 }
 
-void mediumText(){
+void mediumText(string MEDIUM_PARAGRAPHS[] , int size){
       cout << "\n";
     cout << "    +----------------------------------------------------------+" << endl;
     cout << "    |                      MEDIUM MODE                          |" << endl;
@@ -423,14 +437,14 @@ void mediumText(){
     
 
 }
-void difficultText(){
+void difficultText(string DIFFICULT_PARAGRAPHS[] , int size){
       cout << "\n";
     cout << "    +----------------------------------------------------------+" << endl;
     cout << "    |                      DIFFICULT MODE                           |" << endl;
     cout << "    +----------------------------------------------------------+" << endl;
   
 }
-void veteranText(){
+void veteranText(string VETERAN_PARAGRAPHS[] , int size){
       cout << "\n";
     cout << "    +----------------------------------------------------------+" << endl;
     cout << "    |                      VETERAN MODE                           |" << endl;
