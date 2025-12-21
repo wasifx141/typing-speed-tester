@@ -5,22 +5,23 @@
 #include <cstdlib>//for the random function to get random paragraphs
 #include <ctime>//for time() function due to involvement of  time control
 #include <iomanip>//for formatting the output
-#include<algorithm>
+#include<algorithm>//for different functions
+#include<limits>//for fixing the input validation issue
 
 using namespace std;
 int array_size = 20;
 
+//Declaring all the functions  
 void easyText(const string EASY_PARAGRAPHS[], int size, string username);
 void mediumText(const string MEDIUM_PARAGRAPHS[], int size, string username);
 void difficultText(const string DIFFICULT_PARAGRAPHS[], int size, string username);
 void veteranText(const string VETERAN_PARAGRAPHS[], int size, string username);
 double calculateAccuracy(const string& original, const string& typed);
 void DisplayResult(double accuracy, double wpm);
-void showData();
-void displayMenu();
-int countWords(const string& text);
-void saveScore(string username, double wpm);
-string getUsername();
+void showData();//show the
+void displayMenu();//displaying name 
+void saveScore(string username, double wpm);//saing result
+string getUsername();//getting the username
 
 
 const string EASY_PARAGRAPHS[] = {//Paragraphs for easy level difficulty
@@ -344,11 +345,15 @@ int main(){
     while (!exitprogram) {
         displayMenu();
         cout << "  Please enter your selection (1-6): ";
-        cin >> choice;
-        while (choice < 1 || choice > 6) {
+        
+        // if user types letter instead of number it will not stop
+        //now we check if input is valid 
+        while (!(cin >> choice) || choice < 1 || choice > 6) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');//throw away the bad input
             cout << "Invalid choice! Please enter a valid option (1-6): ";
-            cin >> choice;
         }
+        
         switch (choice) {
             case 1:
                 easyText(EASY_PARAGRAPHS, array_size, username);
@@ -374,7 +379,7 @@ int main(){
     }
     return 0;
 }
-void displayMenu(){
+void displayMenu(){  //function to display menu
     cout << "\n\n";
     cout << "  ============================================================================" << endl;
     cout << "                                                                              " << endl;
@@ -412,7 +417,7 @@ void displayMenu(){
     cout << endl;
    
 }
-string getUsername() {
+string getUsername() { //functionn to get the username to store data in file
     string name;
     cout << "\n  ============================================" << endl;
     cout << "         Welcome to TYPEMASTER!" << endl;
@@ -424,7 +429,7 @@ string getUsername() {
 }
 
 void easyText(const string EASY_PARAGRAPHS[], int size, string username){
-    int randomIndex, wordsType;
+    int randomIndex;
     string choice, displayedString ,typedString;
     double minutes , wpm, accuracy;
     cout << "\n";
@@ -433,11 +438,11 @@ void easyText(const string EASY_PARAGRAPHS[], int size, string username){
     cout << "    +----------------------------------------------------------+" << endl;
     cout<<"When you are ready type start: ";
     cin>>choice;
-    transform(choice.begin(), choice.end(), choice.begin(), ::tolower);
+    transform(choice.begin(), choice.end(), choice.begin(), ::tolower);//converting input to lower letter for comparison
 
     if(choice == "start"){
-      srand(time(0));
-      randomIndex = rand() % size;
+      
+      randomIndex = rand() % size;//creating random index each time
       displayedString = EASY_PARAGRAPHS[randomIndex];
 
         cout << "\n  -------- TYPE THE FOLLOWING TEXT --------\n" << endl;
@@ -445,19 +450,19 @@ void easyText(const string EASY_PARAGRAPHS[], int size, string username){
         cout << "\n  ------------------------------------------" << endl;
         cout << "  Start typing: ";
 
-      auto start = std::chrono::steady_clock::now();
+      auto start = std::chrono::steady_clock::now();//starting the time to calute
       
       cin.ignore();
       getline(cin,typedString);
 
-      auto end = std::chrono::steady_clock::now();
+      auto end = std::chrono::steady_clock::now();//stoping time
 
       accuracy =  calculateAccuracy(displayedString,typedString);
-      wordsType = countWords(typedString);
 
       std::chrono::duration<double> totalTime = end - start;
-      minutes = totalTime.count()/60;
-      wpm =  (typedString.length()/ 5)/minutes;
+      minutes = totalTime.count()/60.0;
+     
+      wpm =  (typedString.length()/ 5.0)/minutes;//calculating wpm
 
       DisplayResult(accuracy,wpm);
       saveScore(username, wpm);
@@ -595,46 +600,43 @@ void veteranText(const string VETERAN_PARAGRAPHS[], int size, string username) {
     }
 }
 
-int countWords(const string& text) {
-    if (text.empty()) return 0;
-    
-    int count = 0;
-    bool inWord = false;
-    
-    for (size_t i = 0; i < text.length(); i++) {  // Fixed here
-        if (text[i] != ' ') {
-            if (!inWord) {
-                count++;
-                inWord = true;
-            }
-        } else {
-            inWord = false;
-        }
-    }
-    return count;
-}
-
 //Function to calculate the accuracy so that we can fix the wpm according to the fact that if user has typed the text xorrectly or not
 double calculateAccuracy(const string& original, const string& typed) {
-    int correctCount = 0;
-    int totalTyped = typed.length();
+    int n = original.length();
+    int m = typed.length();
 
-    int minLength = min(original.length(), typed.length());
+    int dp[251][251];
 
-    // Compare character by character
-    for (int i = 0; i < minLength; i++) {
-        if (original[i] == typed[i]) {
-            correctCount++;
+    for (int i = 0; i <= n; i++)
+        dp[i][0] = i;
+
+    for (int j = 0; j <= m; j++)
+        dp[0][j] = j;
+
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            if (original[i - 1] == typed[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = 1 + min(
+                    dp[i - 1][j],           
+                    min(dp[i][j - 1],       
+                        dp[i - 1][j - 1])   
+                );
+            }
         }
     }
 
-    // Avoid division by zero
-    if (totalTyped == 0){
-       return 0.0;
-    }
+    int errors = dp[n][m];
+    int maxLength = max(n, m);
 
-    return (double)correctCount / totalTyped * 100.0;
+    if (maxLength == 0)
+        return 100.0;
+
+    return (1.0 - (double)errors / maxLength) * 100.0;
 }
+
 void DisplayResult(double accuracy, double wpm) {
     cout << "\n\n";
     cout << "  +------------------------------------------+" << endl;
@@ -720,4 +722,3 @@ void showData() {
     cout << "  +------------------------------------------+" << endl;
     inFile.close();
 }
-
